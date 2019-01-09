@@ -21,6 +21,22 @@ message PrimeNumberDecompositionResponse {
     int32 result = 1;
 }
 
+message ComputeAverageRequest { 
+    int64 inNum = 1;
+}
+
+message ComputeAverageResponse { 
+    double average = 1;
+}
+
+message FindMaximumReq { 
+    int32 number = 1;
+}
+
+message FindMaximumRes { 
+    int32 maxNum = 1;
+}
+
 service Calculator { 
 
     //Unary
@@ -28,4 +44,8 @@ service Calculator {
     //Server streaming 
     rpc PrimeNumberDecomposition(PrimeNumberDecompositionRequest) returns (stream PrimeNumberDecompositionResponse);
 
+    //client streaming
+    rpc  ComputeAverage(stream ComputeAverageRequest) returns (ComputeAverageResponse);
+    //Bi directional streaming
+    rpc FindMaximum(stream FindMaximumReq) returns (stream FindMaximumRes);
 }
