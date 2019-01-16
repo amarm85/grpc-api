@@ -1,6 +1,7 @@
 package main
 
 import (
+	"google.golang.org/grpc/status"
 	"io"
 	"time"
 
@@ -22,7 +23,8 @@ func main() {
 	//doUnary(c)
 	//doServerStreaming(c)
 	//doClientStreaming(c)
-	doBiDiStreaming(c)
+	//doBiDiStreaming(c)
+	doErrorCheck(c)
 }
 
 func doUnary(c calculatorpb.CalculatorClient) {
@@ -112,7 +114,7 @@ func doBiDiStreaming(c calculatorpb.CalculatorClient) {
 		log.Fatalf("Error in doBiDiStreaming %v", err)
 	}
 
-	var numbers  = []int32{3,4,7,8,2,4,19,3,4}
+	var numbers = []int32{3, 4, 7, 8, 2, 4, 19, 3, 4}
 
 	waitc := make(chan struct{})
 
@@ -120,7 +122,7 @@ func doBiDiStreaming(c calculatorpb.CalculatorClient) {
 		for _, number := range numbers {
 			log.Printf("sending %v", number)
 			stream.Send(&calculatorpb.FindMaximumReq{
-				Number : number,
+				Number: number,
 			})
 			time.Sleep(1000 * time.Millisecond)
 		}
@@ -148,4 +150,29 @@ func doBiDiStreaming(c calculatorpb.CalculatorClient) {
 	}()
 
 	<-waitc
+}
+
+func doErrorCheck(c calculatorpb.CalculatorClient) {
+
+	log.Printf("doing doErrorCheck calls")
+
+	req := &calculatorpb.SquareRootRequest{
+		Number: -6,
+	}
+	log.Printf("Sending %v", req)
+	res, err := c.SquareRoot(context.Background(), req)
+
+	if err != nil {
+		status, ok := status.FromError(err)
+		if ok {
+			// user error
+			log.Printf("Code %v and message %v", status.Code(),status.Message())
+		} else {
+			log.Fatalf("Got error in doErrorCheck: %v", err)
+
+		}
+	}
+
+	log.Printf("doErrorCheck response %.2f", res.GetSqroot())
+
 }

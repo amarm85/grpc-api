@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/amarm85/grpc-api/greet/greetpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"net"
@@ -94,6 +96,27 @@ func (s *server) GreetEveryone(stream greetpb.GreetService_GreetEveryoneServer) 
 		}
 	}
 
+}
+
+func (s *server) GreetWithDeadline(ctx context.Context, req *greetpb.GreetWithDeadlineRequest) (*greetpb.GreetWithDeadlineResponse, error) {
+	log.Println("GreetWithDeadline rpc function has been invoked")
+
+	for ii := 0; ii < 3; ii++ {
+
+		if ctx.Err() == context.Canceled {
+			//client has cancelled request
+			log.Println("GreetWithDeadline rpc function client cancelled request")
+			return nil, status.Error(codes.DeadlineExceeded, "client cancelled the request")
+		}
+		time.Sleep(1 * time.Second)
+		log.Println("GreetWithDeadline rpc function slept for 1 second")
+	}
+
+	firstName := req.GetGreeting().GetFirstName()
+
+	return &greetpb.GreetWithDeadlineResponse{
+		Result: "Hello " + firstName,
+	}, nil
 }
 
 func main() {
