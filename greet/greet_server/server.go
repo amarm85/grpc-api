@@ -1,6 +1,7 @@
 package main
 
 import (
+	"google.golang.org/grpc/credentials"
 	"context"
 	"github.com/amarm85/grpc-api/greet/greetpb"
 	"google.golang.org/grpc"
@@ -129,7 +130,24 @@ func main() {
 		log.Fatalf("failed to start TCP listner: %v", err)
 	}
 
-	s := grpc.NewServer()
+	tls := true
+
+	opts  := []grpc.ServerOption{}
+	if tls {
+		certFile := "ssl/server.crt"
+		keyFile := "ssl/server.pem"
+		creds, err := credentials.NewServerTLSFromFile(certFile,keyFile)
+	
+		if err != nil { 
+			log.Fatalf("Failed loading certificates %v",err)
+		}
+		
+		opts = append(opts,grpc.Creds(creds))
+	
+	}
+
+	s := grpc.NewServer(opts...)
+
 	greetpb.RegisterGreetServiceServer(s, &server{})
 
 	if err = s.Serve(lis); err != nil {
