@@ -1,11 +1,11 @@
 package main
 
 import (
-	"google.golang.org/grpc/credentials"
 	"context"
 	"github.com/amarm85/grpc-api/greet/greetpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 	"io"
 	"log"
@@ -132,18 +132,18 @@ func main() {
 
 	tls := true
 
-	opts  := []grpc.ServerOption{}
+	opts := []grpc.ServerOption{}
 	if tls {
 		certFile := "ssl/server.crt"
 		keyFile := "ssl/server.pem"
-		creds, err := credentials.NewServerTLSFromFile(certFile,keyFile)
-	
-		if err != nil { 
-			log.Fatalf("Failed loading certificates %v",err)
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+
+		if err != nil {
+			log.Fatalf("Failed loading certificates %v", err)
 		}
-		
-		opts = append(opts,grpc.Creds(creds))
-	
+
+		opts = append(opts, grpc.Creds(creds))
+
 	}
 
 	s := grpc.NewServer(opts...)

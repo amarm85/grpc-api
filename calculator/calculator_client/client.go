@@ -166,7 +166,7 @@ func doErrorCheck(c calculatorpb.CalculatorClient) {
 		status, ok := status.FromError(err)
 		if ok {
 			// user error
-			log.Printf("Code %v and message %v", status.Code(),status.Message())
+			log.Printf("Code %v and message %v", status.Code(), status.Message())
 		} else {
 			log.Fatalf("Got error in doErrorCheck: %v", err)
 

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"google.golang.org/grpc/credentials"
 	"context"
 	"github.com/amarm85/grpc-api/greet/greetpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 	"io"
 	"log"
@@ -17,15 +17,15 @@ func main() {
 	//start with inscure mode
 	opts := grpc.WithInsecure()
 
-	if tls { 
+	if tls {
 		//if tls is true then change the mode to secure mode
-		certFile := "ssl/ca.crt" //CA trust certificate 
-		creds , err := credentials.NewClientTLSFromFile(certFile,"")
-	
+		certFile := "ssl/ca.crt" //CA trust certificate
+		creds, err := credentials.NewClientTLSFromFile(certFile, "")
+
 		if err != nil {
-			log.Fatalf("Error while loading CA trust certificate %v",err)
+			log.Fatalf("Error while loading CA trust certificate %v", err)
 		}
-	
+
 		opts = grpc.WithTransportCredentials(creds)
 
 	}
@@ -210,7 +210,7 @@ func doBiDiStreaming(c greetpb.GreetServiceClient) {
 }
 
 func doUnaryWithDeadline(c greetpb.GreetServiceClient, timeout time.Duration) {
-	log.Printf("Starting doUnaryWithDeadline opertaton with time %v",timeout )
+	log.Printf("Starting doUnaryWithDeadline opertaton with time %v", timeout)
 
 	req := &greetpb.GreetWithDeadlineRequest{
 		Greeting: &greetpb.Greeting{
