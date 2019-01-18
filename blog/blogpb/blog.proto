@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package blog;
+
+option go_package = "blogpb";
+
+message Blog {
+    string id = 1;
+    string author_id = 2;
+    string title = 3;
+    string content = 4;
+}
+
+message CreateBlogReq {
+    Blog blog =  1;
+}
+message CreateBlogRes { 
+    Blog blog =  1; //will have blog id   
+}
+
+message ReadBlogReq {
+    string ID = 1;
+}
+
+message ReadBlogRes { 
+    Blog blog =  1;
+}
+
+message UpdateBlogReq { 
+    Blog blog = 1;
+}
+
+message UpdateBlogRes { 
+    Blog blog = 1;
+}
+
+message DeleteBlogReq { 
+    string ID = 1;
+}
+
+message DeleteBlogRes { 
+    string result  = 1;
+}
+
+message ListBlogReq { 
+
+}
+
+message ListBlogRes { 
+    Blog blog = 1;
+}
+
+service BlogService {
+    //Create blog rpc
+    rpc CreateBlog(CreateBlogReq) returns (CreateBlogRes);
+    //Read blog rpc
+    //Throws error that blog entry not found 
+    rpc ReadBlog(ReadBlogReq) returns (ReadBlogRes);
+    //update blog rpc
+    //Throws error that blog entry not found 
+    rpc UpdateBlog(UpdateBlogReq) returns (UpdateBlogRes);
+    //Delete blog rpc
+    //Throws error that blog entry not found 
+    rpc DeleteBlog(DeleteBlogReq) returns (DeleteBlogRes);
+    //server streaming
+    rpc ListBlog(ListBlogReq) returns (stream ListBlogRes);
+}
+
